@@ -3,9 +3,13 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
 const createToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  return jwt.sign(
+    { id: user.id, email: user.email, name: user.name, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    },
+  );
 };
 
 export const register = async (req, res) => {
@@ -85,7 +89,7 @@ export const login = async (req, res) => {
 
     const token = createToken(user);
 
-    res.json({
+    res.status(201).json({
       token,
       user: {
         id: user._id,
