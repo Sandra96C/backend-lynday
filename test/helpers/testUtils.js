@@ -1,8 +1,9 @@
+import request from "supertest";
 import bcrypt from "bcryptjs";
-import User from "../models/User.js";
-import "../db.js";
+import app from "../../app.js";
+import User from "../../models/User.js";
 
-export async function seedDatabase() {
+export const createTestUsers = async () => {
   await User.deleteMany({});
   const hash = await bcrypt.hash("123456", 10);
 
@@ -24,8 +25,20 @@ export async function seedDatabase() {
   // Admin para register tests
   await User.create({
     name: "admin",
-    email: "admin@example.com",
+    email: "admin@test.com",
     password: hash,
     role: "admin",
   });
-}
+};
+
+export const getTestUserData = async (userEmail, field = "") => {
+  const res = await request(app).post("/auth/login").send({
+    email: userEmail,
+    password: "123456",
+  });
+
+  if (field) {
+    return res.body[field];
+  }
+  return res.body;
+};

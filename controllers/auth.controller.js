@@ -45,6 +45,7 @@ export const register = async (req, res) => {
       email: user.email,
       name: user.name,
       role: user.role,
+      active: user.active,
     });
   } catch (error) {
     console.error("Error:", error);
@@ -84,6 +85,12 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({
         error: "Invalid Credentials",
+      });
+    }
+
+    if (!user.active) {
+      return res.status(403).json({
+        error: "Invalid User",
       });
     }
 
