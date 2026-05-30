@@ -34,7 +34,7 @@ const categorySchema = new mongoose.Schema(
       default: true,
     },
 
-    order: {
+    sort: {
       type: Number,
       default: 0,
     },
@@ -43,7 +43,5 @@ const categorySchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-categorySchema.index({ slug: 1 });
 
 export default mongoose.model("Category", categorySchema);

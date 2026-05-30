@@ -4,6 +4,7 @@ import app from "../../app.js";
 import User from "../../models/User.js";
 import Product from "../../models/Product.js";
 import ProductCategory from "../../models/ProductCategory.js";
+import Category from "../../models/Category.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
@@ -91,6 +92,26 @@ export const createTestProductCategories = async () => {
   await ProductCategory.create({
     name: "decoración",
     description: "Productos decorativos para el hogar",
+    sort: 2,
+  });
+};
+
+export const createTestCategories = async () => {
+  await Category.deleteMany({});
+
+  await Category.create({
+    name: "día de la madre",
+    description: "Cajas regalo especiales para el día de la madre",
+    slug: "dia-de-la-madre",
+    active: true,
+    sort: 1,
+  });
+
+  await Category.create({
+    name: "cumpleaños",
+    description: "Cajas regalo para celebrar cumpleaños",
+    slug: "cumpleanos",
+    active: true,
     sort: 2,
   });
 };
