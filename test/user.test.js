@@ -68,7 +68,9 @@ describe("Users ", function () {
 
       userEdit.name = "Lola";
 
-      const res = await request(app).put(`/user/${userEdit.id}`).send(userEdit);
+      const res = await request(app)
+        .put(`/user/${userEdit.id}`)
+        .send({ name: userEdit.name });
 
       expect(res.status).to.equal(401);
     });

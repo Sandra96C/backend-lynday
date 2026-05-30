@@ -1,70 +1,70 @@
 import { expect } from "chai";
 import request from "supertest";
 import app from "../app.js";
-import Product from "../models/Product.js";
+import GiftBox from "../models/GiftBox.js";
 import {
-  createTestProducts,
+  createTestBoxes,
   createTestUsers,
   getTestUserData,
 } from "./helpers/testUtils.js";
 
-describe("Products ", function () {
+describe("GiftBox ", function () {
   beforeEach(async () => {
-    await createTestProducts();
+    await createTestBoxes();
   });
 
-  describe("GET Products", function () {
-    it("Deberia retornar un array de products", async function () {
-      const res = await request(app).get(`/product`);
+  describe("GET GiftBoxes", function () {
+    it("Deberia retornar un array de cajas regalo", async function () {
+      const res = await request(app).get(`/box`);
 
       expect(res.status).to.equal(200);
       expect(res.body).to.be.an("array");
     });
 
-    it("Deberia retornar el producto con el id", async function () {
-      const product = await Product.findOne();
+    it("Deberia retornar la caja con el id", async function () {
+      const giftBox = await GiftBox.findOne();
 
-      const res = await request(app).get(`/product/${product._id}`);
+      const res = await request(app).get(`/box/${giftBox._id}`);
 
       expect(res.status).to.equal(200);
       expect(res.body).to.have.property("name");
     });
   });
 
-  describe("Put Product", function () {
+  describe("Put GiftBox", function () {
     let adminUser = "";
     let user = "";
 
     beforeEach(async () => {
       await createTestUsers();
-      adminUser = await getTestUserData("admin@test.com");
       user = await getTestUserData("test@test.com");
     });
 
-    it("Edita product name", async () => {
-      const product = await Product.findOne();
-      product.name = "Lola";
+    it("Edita gift box name", async () => {
+      const giftBox = await GiftBox.findOne();
+      giftBox.name = "Lola";
 
       const res = await request(app)
-        .put(`/product/${product._id}`)
+        .put(`/box/${giftBox._id}`)
         .set("Authorization", `Bearer ${user.token}`)
-        .send({ name: product.name });
+        .send({ name: giftBox.name });
 
       expect(res.status).to.equal(200);
       expect(res.body.name).to.equal("Lola");
     });
 
-    it("No edita product sin token", async () => {
-      const product = await Product.findOne();
+    it("No edita la caja sin token", async () => {
+      const giftBox = await GiftBox.findOne();
+      giftBox.name = "Maria";
       const res = await request(app)
-        .put(`/product/${product._id}`)
-        .send({ name: product.name });
+        .put(`/box/${giftBox._id}`)
+        .send({ name: giftBox.name });
 
       expect(res.status).to.equal(401);
     });
   });
 
-  describe("Delete Product", function () {
+  describe("Delete Caja", function () {
     let adminUser = "";
     let user = "";
 
@@ -74,19 +74,19 @@ describe("Products ", function () {
       user = await getTestUserData("test@test.com");
     });
 
-    it("No Elimina product si no es admin", async () => {
-      const product = await Product.findOne();
+    it("No Elimina caja si no es admin", async () => {
+      const giftBox = await GiftBox.findOne();
       const res = await request(app)
-        .delete(`/product/${product._id}`)
+        .delete(`/box/${giftBox._id}`)
         .set("Authorization", `Bearer ${user.token}`);
 
       expect(res.status).to.equal(403);
     });
 
-    it("Elimina product si es admin", async () => {
-      const product = await Product.findOne();
+    it("Elimina caja si es admin", async () => {
+      const giftBox = await GiftBox.findOne();
       const res = await request(app)
-        .delete(`/product/${product.id}`)
+        .delete(`/box/${giftBox._id}`)
         .set("Authorization", `Bearer ${adminUser.token}`);
 
       expect(res.status).to.equal(204);

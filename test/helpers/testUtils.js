@@ -5,6 +5,7 @@ import User from "../../models/User.js";
 import Product from "../../models/Product.js";
 import ProductCategory from "../../models/ProductCategory.js";
 import Category from "../../models/Category.js";
+import GiftBox from "../../models/GiftBox.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
@@ -113,5 +114,37 @@ export const createTestCategories = async () => {
     slug: "cumpleanos",
     active: true,
     sort: 2,
+  });
+};
+
+export const createTestBoxes = async () => {
+  await createTestCategories();
+  await createTestProducts();
+
+  const product = await Product.findOne();
+  const category = await Category.findOne();
+
+  await GiftBox.deleteMany({});
+
+  await GiftBox.create({
+    name: "caja básica día de la madre",
+    type: "fixed",
+    slug: "caja-basica",
+    level: "basic",
+    basePrice: 19.99,
+    category: category._id,
+    products: [{ product: product._id, quantity: 1 }],
+    active: true,
+  });
+
+  await GiftBox.create({
+    name: "caja premium cumpleaños",
+    type: "custom",
+    slug: "caja-premium",
+    level: "premium",
+    basePrice: 59.99,
+    category: category._id,
+    products: [{ product: product._id, quantity: 2 }],
+    active: true,
   });
 };

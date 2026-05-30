@@ -57,9 +57,11 @@ describe("Products Category ", function () {
 
     it("No edita product category sin token", async () => {
       const productCategory = await ProductCategory.findOne();
+      productCategory.name = "Maria";
+
       const res = await request(app)
         .put(`/product-category/${productCategory._id}`)
-        .send(productCategory);
+        .send({ name: productCategory.name });
 
       expect(res.status).to.equal(401);
     });
