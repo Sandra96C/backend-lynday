@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import app from "../../app.js";
 import User from "../../models/User.js";
 import Product from "../../models/Product.js";
+import ProductCategory from "../../models/ProductCategory.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
@@ -75,5 +76,21 @@ export const createTestProducts = async () => {
     stock: 20,
     level: "premium",
     active: true,
+  });
+};
+
+export const createTestProductCategories = async () => {
+  await ProductCategory.deleteMany({});
+
+  await ProductCategory.create({
+    name: "alimentación",
+    description: "Productos de degustación y alimentación artesanal",
+    sort: 1,
+  });
+
+  await ProductCategory.create({
+    name: "decoración",
+    description: "Productos decorativos para el hogar",
+    sort: 2,
   });
 };

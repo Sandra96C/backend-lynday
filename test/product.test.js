@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import request from "supertest";
 import app from "../app.js";
-import bcrypt from "bcryptjs";
 import Product from "../models/Product.js";
 import {
   createTestProducts,
