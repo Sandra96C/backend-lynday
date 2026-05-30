@@ -2,6 +2,7 @@ import request from "supertest";
 import bcrypt from "bcryptjs";
 import app from "../../app.js";
 import User from "../../models/User.js";
+import Product from "../../models/Product.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
@@ -41,4 +42,38 @@ export const getTestUserData = async (userEmail, field = "") => {
     return res.body[field];
   }
   return res.body;
+};
+
+export const createTestProducts = async () => {
+  await Product.deleteMany({});
+
+  await Product.create({
+    name: "tarjeta personalizada",
+    description: "Tarjeta de felicitación personalizada",
+    slug: "tarjeta-personalizada",
+    price: 2.99,
+    stock: 100,
+    level: "basic",
+    active: true,
+  });
+
+  await Product.create({
+    name: "vela aromática",
+    description: "Vela aromática de lavanda 200g",
+    slug: "vela-aromatica-lavanda",
+    price: 12.99,
+    stock: 50,
+    level: "medium",
+    active: true,
+  });
+
+  await Product.create({
+    name: "cesta de productos gourmet",
+    description: "Selección de productos gourmet artesanales",
+    slug: "cesta-productos-gourmet",
+    price: 49.99,
+    stock: 20,
+    level: "premium",
+    active: true,
+  });
 };

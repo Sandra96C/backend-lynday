@@ -42,16 +42,17 @@ describe("Auth User", function () {
       expect(res.status).to.equal(400);
     });
 
-    it("Debería retornar 400 si el usuario ya existe en register", async function () {
+    it("Debería retornar 403 si el usuario ya existe en register", async function () {
       const res = await await request(app)
         .post("/auth/register")
         .set("Authorization", `Bearer ${adminToken}`)
         .send({
+          name: "test",
           email: "test@test.com",
           password: "123456",
         });
 
-      expect(res.status).to.equal(400);
+      expect(res.status).to.equal(403);
     });
 
     it("Deberia retornar 401 si no hay nadie logueado", async function () {
