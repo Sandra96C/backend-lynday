@@ -107,7 +107,7 @@ export const createProduct = async (req, res) => {
     const existProduct = await Product.findOne({ slug: finalSlug });
 
     if (existProduct) {
-      return res.status(403).json({
+      return res.status(409).json({
         error: "Product already exist",
       });
     }
