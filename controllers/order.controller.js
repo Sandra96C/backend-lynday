@@ -3,7 +3,9 @@ import Order from "../models/Order.js";
 
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find()
+      .populate("giftBoxes.giftBox")
+      .populate("giftBoxes.products.product");
     res.status(200).json(orders);
   } catch (error) {
     console.error("Error:", error);
@@ -15,7 +17,9 @@ export const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const order = await Order.findById(id);
+    const order = await Order.findById(id)
+      .populate("giftBoxes.giftBox")
+      .populate("giftBoxes.products.product");
 
     if (!order) {
       return res.status(404).json({ error: "order not found" });
@@ -39,7 +43,9 @@ export const getOrderById = async (req, res) => {
 export const updateOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const order = await Order.findById(id);
+    const order = await Order.findById(id)
+      .populate("giftBoxes.giftBox")
+      .populate("giftBoxes.products.product");
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });

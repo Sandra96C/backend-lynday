@@ -3,7 +3,9 @@ import Product from "../models/Product.js";
 
 export const getBoxes = async (req, res) => {
   try {
-    const boxes = await GiftBox.find();
+    const boxes = await GiftBox.find()
+      .populate("category")
+      .populate("products.product");
     res.status(200).json(boxes);
   } catch (error) {
     console.error("Error:", error);
@@ -15,7 +17,9 @@ export const getBoxById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const box = await GiftBox.findById(id);
+    const box = await GiftBox.findById(id)
+      .populate("category")
+      .populate("products.product");
 
     if (!box) {
       return res.status(404).json({ error: "box not found" });
@@ -36,7 +40,9 @@ export const updateBox = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const box = await GiftBox.findById(id);
+    const box = await GiftBox.findById(id)
+      .populate("category")
+      .populate("products.product");
 
     if (!box) {
       return res.status(404).json({ error: "Box not found" });
