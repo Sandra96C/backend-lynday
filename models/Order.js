@@ -21,22 +21,18 @@ const orderSchema = new mongoose.Schema(
       },
       address: {
         type: String,
-        required: [true, "Address required"],
         trim: true,
       },
       zipCode: {
         type: String,
-        required: [true, "Zip code required"],
         trim: true,
       },
       city: {
         type: String,
-        required: [true, "City required"],
         trim: true,
       },
       province: {
         type: String,
-        required: [true, "Province required"],
         trim: true,
       },
       phone: {
@@ -55,12 +51,10 @@ const orderSchema = new mongoose.Schema(
         },
         price: {
           type: Number,
-          required: true,
           min: 0,
         },
         quantity: {
           type: Number,
-          required: true,
           min: 1,
         },
         level: {
@@ -75,12 +69,10 @@ const orderSchema = new mongoose.Schema(
             name: { type: String },
             quantity: {
               type: Number,
-              required: true,
               min: 1,
             },
             price: {
               type: Number,
-              required: true,
               min: 0,
             },
           },
@@ -89,14 +81,12 @@ const orderSchema = new mongoose.Schema(
     ],
     totalPrice: {
       type: Number,
-      required: true,
       min: 0,
     },
     payment: {
       method: {
         type: String,
         enum: ["creditCard", "bizum"],
-        required: true,
       },
       status: {
         type: String,
@@ -109,8 +99,16 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
-      default: "pending",
+      enum: [
+        "draft",
+        "checkout",
+        "pending",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled",
+      ],
+      default: "draft",
     },
   },
   {
@@ -120,21 +118,19 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.pre("save", async function (next) {
   if (!this.isNew) {
-    return next();
+    return;
   }
 
   try {
     const counter = await Counter.findOneAndUpdate(
       { _id: "orderNumber" },
       { $inc: { sequenceValue: 1 } },
-      { new: true, upsert: true },
+      { returnDocument: "after", upsert: true },
     );
 
-    this.orderNumber = `ORD-${String(counter.sequenceValue).padStart(4, "0")}`;
-
-    next();
+    return (this.orderNumber = `ORD-${String(counter.sequenceValue).padStart(4, "0")}`);
   } catch (error) {
-    next(error);
+    throw new Error(error);
   }
 });
 

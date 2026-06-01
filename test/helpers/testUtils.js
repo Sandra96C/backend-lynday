@@ -6,6 +6,7 @@ import Product from "../../models/Product.js";
 import ProductCategory from "../../models/ProductCategory.js";
 import Category from "../../models/Category.js";
 import GiftBox from "../../models/GiftBox.js";
+import Order from "../../models/Order.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
@@ -146,5 +147,54 @@ export const createTestBoxes = async () => {
     category: category._id,
     products: [{ product: product._id, quantity: 2 }],
     active: true,
+  });
+};
+
+export const createTestOrders = async () => {
+  await createTestBoxes();
+  await Order.deleteMany({});
+
+  const box = await GiftBox.findOne();
+
+  await Order.create({
+    orderNumber: "0001",
+    customer: {
+      name: "test",
+      email: "test@test.com",
+      phone: "612345678",
+    },
+    giftBoxes: [
+      {
+        giftBox: box._id,
+        name: box.name,
+        price: box.basePrice,
+        quantity: 1,
+        level: box.level,
+        products: box.products,
+      },
+    ],
+    totalPrice: box.basePrice,
+    orderStatus: "draft",
+  });
+
+  await Order.create({
+    orderNumber: "0002",
+    customer: {
+      name: "test2",
+      email: "test2@test.com",
+      phone: "612315678",
+    },
+    giftBoxes: [
+      {
+        giftBox: box._id,
+        name: box.name,
+        price: box.basePrice,
+        quantity: 1,
+        level: box.level,
+        products: box.products,
+      },
+    ],
+    totalPrice: box.basePrice,
+    orderStatus: "pending",
   });
 };

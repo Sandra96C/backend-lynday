@@ -2,23 +2,33 @@ import jwt from "jsonwebtoken";
 
 export const authMiddleware = (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    const decoded = verifyToken(req.headers.authorization);
 
-    if (!authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "Invalid token format" });
-    }
-
-    const [, token] = authHeader.split(" ");
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) return res.status(401).json({ error: "Invalid token" });
 
     req.user = decoded;
+
     next();
   } catch (error) {
     return res.status(401).json({
       error: "Invalid token",
     });
   }
+};
+
+const verifyToken = (authHeader) => {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+
+  const [, token] = authHeader.split(" ");
+  return jwt.verify(token, process.env.JWT_SECRET);
+};
+
+export const optionalAuth = (req, res, next) => {
+  try {
+    const decoded = verifyToken(req.headers.authorization);
+    if (decoded) req.user = decoded;
+  } catch {}
+  next();
 };
 
 export const isAdmin = (req, res, next) => {
