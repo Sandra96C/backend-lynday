@@ -92,4 +92,43 @@ describe("Products ", function () {
       expect(res.status).to.equal(204);
     });
   });
+
+  describe("Post Product", function () {
+    let adminUser = "";
+    let user = "";
+    beforeEach(async () => {
+      await createTestUsers();
+      adminUser = await getTestUserData("admin@test.com");
+      user = await getTestUserData("test@test.com");
+    });
+
+    it("Crea un nuevo producto", async () => {
+      const newProduct = {
+        name: "New Product",
+        description: "This is a new product",
+        price: 100,
+        stock: 10,
+      };
+
+      const res = await request(app)
+        .post(`/product/new`)
+        .set("Authorization", `Bearer ${adminUser.token}`)
+        .send(newProduct);
+
+      expect(res.status).to.equal(201);
+      expect(res.body).to.have.property("slug", "new-product");
+    });
+
+    it("No crea un nuevo producto sin token", async () => {
+      const newProduct = {
+        name: "New Product",
+        description: "This is a new product",
+        price: 100,
+        stock: 10,
+      };
+      const res = await request(app).post(`/product/new`).send(newProduct);
+
+      expect(res.status).to.equal(401);
+    });
+  });
 });

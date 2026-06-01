@@ -113,7 +113,7 @@ export const createBox = async (req, res) => {
       });
     }
 
-    if (products && products.length < 1) {
+    if (!products || products.length < 1) {
       return res.status(400).json({
         error: "Box must contain at least one product",
       });

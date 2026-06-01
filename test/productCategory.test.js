@@ -84,4 +84,49 @@ describe("Products Category ", function () {
       expect(res.status).to.equal(204);
     });
   });
+
+  describe("POST Product Category", function () {
+    let user = "";
+
+    beforeEach(async () => {
+      await createTestUsers();
+      user = await getTestUserData("test@test.com");
+    });
+
+    it("Crea una nueva categoria de producto", async () => {
+      const newCategory = {
+        name: "Categoria de prueba",
+      };
+      const res = await request(app)
+        .post(`/product-category/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send(newCategory);
+
+      expect(res.status).to.equal(201);
+      expect(res.body).to.have.property("name", "categoria de prueba");
+    });
+
+    it("No crea una nueva categoria de producto que ya existe", async () => {
+      const newCategory = {
+        name: "Categoria de prueba",
+      };
+      const res = await request(app)
+        .post(`/product-category/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send(newCategory);
+
+      expect(res.status).to.equal(409);
+    });
+
+    it("No crea una nueva categoria de producto sin token", async () => {
+      const newCategory = {
+        name: "decoración",
+      };
+      const res = await request(app)
+        .post(`/product-category/new`)
+        .send(newCategory);
+
+      expect(res.status).to.equal(401);
+    });
+  });
 });

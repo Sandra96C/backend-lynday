@@ -2,6 +2,7 @@ import { expect } from "chai";
 import request from "supertest";
 import app from "../app.js";
 import GiftBox from "../models/GiftBox.js";
+import Product from "../models/Product.js";
 import {
   createTestBoxes,
   createTestUsers,
@@ -90,6 +91,75 @@ describe("GiftBox ", function () {
         .set("Authorization", `Bearer ${adminUser.token}`);
 
       expect(res.status).to.equal(204);
+    });
+  });
+
+  describe("POST GiftBox", function () {
+    let product = {};
+    let user = "";
+    beforeEach(async () => {
+      await createTestUsers();
+      user = await getTestUserData("test@test.com");
+
+      product = await Product.findOne();
+    });
+
+    it("Crea una nueva caja regalo", async () => {
+      const newBox = {
+        name: "test",
+        description: "Una caja llena de sorpresas",
+        basePrice: 49.99,
+        products: [{ product: product._id, quantity: 1 }],
+      };
+
+      const res = await request(app)
+        .post(`/box/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send(newBox);
+
+      expect(res.status).to.equal(201);
+      expect(res.body).to.have.property("slug", "test");
+    });
+
+    it("Devuelve error si una nueva caja regalo no tiene productos", async () => {
+      const newBox = {
+        name: "Caja sorpresa",
+        description: "Una caja llena de sorpresas",
+        basePrice: 49.99,
+      };
+      const res = await request(app)
+        .post(`/box/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send(newBox);
+
+      expect(res.status).to.equal(400);
+    });
+
+    it("No crea una nueva caja regalo sin token", async () => {
+      const newBox = {
+        name: "Caja sorpresa2",
+        description: "Una caja llena de sorpresas",
+        products: [{ product: product._id, quantity: 1 }],
+        basePrice: 49.99,
+      };
+      const res = await request(app).post(`/box/new`).send(newBox);
+
+      expect(res.status).to.equal(401);
+    });
+
+    it("No Crea una nueva box si existe", async () => {
+      const newBox = {
+        name: "caja basica",
+        description: "Una caja llena de sorpresas",
+        products: [{ product: product._id, quantity: 1 }],
+        basePrice: 49.99,
+      };
+      const res = await request(app)
+        .post(`/box/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send(newBox);
+
+      expect(res.status).to.equal(409);
     });
   });
 });

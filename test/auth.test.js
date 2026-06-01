@@ -42,7 +42,7 @@ describe("Auth User", function () {
       expect(res.status).to.equal(400);
     });
 
-    it("Debería retornar 403 si el usuario ya existe en register", async function () {
+    it("Debería retornar 409 si el usuario ya existe en register", async function () {
       const res = await await request(app)
         .post("/auth/register")
         .set("Authorization", `Bearer ${adminToken}`)
@@ -52,7 +52,7 @@ describe("Auth User", function () {
           password: "123456",
         });
 
-      expect(res.status).to.equal(403);
+      expect(res.status).to.equal(409);
     });
 
     it("Deberia retornar 401 si no hay nadie logueado", async function () {

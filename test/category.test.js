@@ -80,4 +80,31 @@ describe("Category ", function () {
       expect(res.status).to.equal(204);
     });
   });
+
+  describe("Create Category", function () {
+    let user = "";
+    beforeEach(async () => {
+      await createTestUsers();
+      user = await getTestUserData("test@test.com");
+    });
+
+    it("Crea una nueva category", async () => {
+      const res = await request(app)
+        .post(`/category/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send({ name: "New Category" });
+
+      expect(res.status).to.equal(201);
+      expect(res.body).to.have.property("name", "new Category");
+    });
+
+    it("No crea una nueva category que ya existe", async () => {
+      const res = await request(app)
+        .post(`/category/new`)
+        .set("Authorization", `Bearer ${user.token}`)
+        .send({ name: "new Category" });
+
+      expect(res.status).to.equal(409);
+    });
+  });
 });
