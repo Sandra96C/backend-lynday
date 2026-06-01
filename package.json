@@ -1,0 +1,27 @@
+{
+  "name": "backend-lynday",
+  "version": "1.0.0",
+  "description": "API REST con Express y MongoDB para la aplicación Lynday",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "mocha --require test/setup.js --ignore test/seed.js --exit"
+  },
+  "author": "Sandra Colomer",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.3"
+  },
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "mocha": "^11.7.5",
+    "supertest": "^7.2.2"
+  }
+}
