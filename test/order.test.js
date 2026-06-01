@@ -2,11 +2,13 @@ import { expect } from "chai";
 import request from "supertest";
 import app from "../app.js";
 import Order from "../models/Order.js";
+import GiftBox from "../models/GiftBox.js";
 
 import {
   createTestUsers,
   getTestUserData,
   createTestOrders,
+  createTestBoxes,
 } from "./helpers/testUtils.js";
 
 describe("Order ", function () {
@@ -95,6 +97,65 @@ describe("Order ", function () {
         .set("Authorization", `Bearer ${user.token}`);
 
       expect(res.status).to.equal(200);
+    });
+  });
+
+  describe("POST ORDER ", function () {
+    beforeEach(async () => {
+      await createTestBoxes();
+    });
+
+    it("Puedes crear un order", async () => {
+      const giftBox = await GiftBox.findOne();
+      const res = await request(app)
+        .post(`/order/new`)
+        .send({
+          customer: {
+            name: "test3",
+            email: "test3@test.com",
+            phone: "612345678",
+          },
+          giftBoxes: [
+            {
+              giftBox: giftBox._id,
+              name: giftBox.name,
+              price: giftBox.basePrice,
+              quantity: 1,
+              products: giftBox.products,
+            },
+          ],
+          totalPrice: giftBox.basePrice,
+          orderStatus: "draft",
+        });
+
+      expect(res.status).to.equal(201);
+      expect(res.body.orderNumber).to.be.a("string");
+      expect(res.body.orderNumber).to.equal("ORD-0001");
+
+      const res2 = await request(app)
+        .post(`/order/new`)
+        .send({
+          customer: {
+            name: "test3",
+            email: "test3@test.com",
+            phone: "612345678",
+          },
+          giftBoxes: [
+            {
+              giftBox: giftBox._id,
+              name: giftBox.name,
+              price: giftBox.basePrice,
+              quantity: 1,
+              products: giftBox.products,
+            },
+          ],
+          totalPrice: giftBox.basePrice,
+          orderStatus: "draft",
+        });
+
+      expect(res2.status).to.equal(201);
+      expect(res2.body.orderNumber).to.be.a("string");
+      expect(res2.body.orderNumber).to.equal("ORD-0002");
     });
   });
 });

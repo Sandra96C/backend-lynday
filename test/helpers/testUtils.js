@@ -7,6 +7,7 @@ import ProductCategory from "../../models/ProductCategory.js";
 import Category from "../../models/Category.js";
 import GiftBox from "../../models/GiftBox.js";
 import Order from "../../models/Order.js";
+import Counter from "../../models/Counter.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
@@ -86,13 +87,13 @@ export const createTestProductCategories = async () => {
   await ProductCategory.deleteMany({});
 
   await ProductCategory.create({
-    name: "alimentación",
+    name: "alimentacion",
     description: "Productos de degustación y alimentación artesanal",
     sort: 1,
   });
 
   await ProductCategory.create({
-    name: "decoración",
+    name: "decoracion",
     description: "Productos decorativos para el hogar",
     sort: 2,
   });
@@ -102,7 +103,7 @@ export const createTestCategories = async () => {
   await Category.deleteMany({});
 
   await Category.create({
-    name: "día de la madre",
+    name: "dia de la madre",
     description: "Cajas regalo especiales para el día de la madre",
     slug: "dia-de-la-madre",
     active: true,
@@ -153,11 +154,12 @@ export const createTestBoxes = async () => {
 export const createTestOrders = async () => {
   await createTestBoxes();
   await Order.deleteMany({});
+  await Counter.deleteMany({});
 
   const box = await GiftBox.findOne();
 
   await Order.create({
-    orderNumber: "0001",
+    orderNumber: "ORD-0003",
     customer: {
       name: "test",
       email: "test@test.com",
@@ -178,7 +180,7 @@ export const createTestOrders = async () => {
   });
 
   await Order.create({
-    orderNumber: "0002",
+    orderNumber: "ORD-0004",
     customer: {
       name: "test2",
       email: "test2@test.com",

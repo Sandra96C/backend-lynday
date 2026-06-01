@@ -116,22 +116,4 @@ const orderSchema = new mongoose.Schema(
   },
 );
 
-orderSchema.pre("save", async function (next) {
-  if (!this.isNew) {
-    return;
-  }
-
-  try {
-    const counter = await Counter.findOneAndUpdate(
-      { _id: "orderNumber" },
-      { $inc: { sequenceValue: 1 } },
-      { returnDocument: "after", upsert: true },
-    );
-
-    return (this.orderNumber = `ORD-${String(counter.sequenceValue).padStart(4, "0")}`);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
 export default mongoose.model("Order", orderSchema);

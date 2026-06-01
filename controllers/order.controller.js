@@ -1,3 +1,4 @@
+import Counter from "../models/Counter.js";
 import Order from "../models/Order.js";
 
 export const getOrders = async (req, res) => {
@@ -107,8 +108,10 @@ export const createOrder = async (req, res) => {
         error: "Complete the required fields please",
       });
     }
+    const orderNumber = await generateOrderNumber();
 
     const order = await Order.create({
+      orderNumber,
       customer,
       giftBoxes,
       totalPrice,
@@ -121,5 +124,19 @@ export const createOrder = async (req, res) => {
     return res.status(500).json({
       error: "Internal Server Error",
     });
+  }
+};
+
+const generateOrderNumber = async () => {
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { _id: "orderNumber" },
+      { $inc: { sequenceValue: 1 } },
+      { returnDocument: "after", upsert: true },
+    );
+
+    return `ORD-${String(counter.sequenceValue).padStart(4, "0")}`;
+  } catch (error) {
+    throw new Error(error);
   }
 };

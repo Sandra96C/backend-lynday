@@ -95,14 +95,15 @@ describe("Category ", function () {
         .send({ name: "New Category" });
 
       expect(res.status).to.equal(201);
-      expect(res.body).to.have.property("name", "new Category");
+      expect(res.body).to.have.property("name", "new category");
+      expect(res.body).to.have.property("slug", "new-category");
     });
 
     it("No crea una nueva category que ya existe", async () => {
       const res = await request(app)
         .post(`/category/new`)
         .set("Authorization", `Bearer ${user.token}`)
-        .send({ name: "new Category" });
+        .send({ name: "dia de la madre" });
 
       expect(res.status).to.equal(409);
     });
