@@ -43,6 +43,10 @@ const giftBoxSchema = new mongoose.Schema(
         },
       },
     ],
+    stock: {
+      type: Number,
+      default: 1,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
