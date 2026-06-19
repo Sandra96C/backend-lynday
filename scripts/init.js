@@ -27,3 +27,4 @@ const createAdminUser = async () => {
 };
 
 createAdminUser();
+// $2b$10$ufVNF.oCsfgt5OtpyFJqhet3nJNsJEYu2ZQno89E1jNAJftTs6Zlm
