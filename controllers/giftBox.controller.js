@@ -48,7 +48,16 @@ export const updateBox = async (req, res) => {
       return res.status(404).json({ error: "Box not found" });
     }
 
-    const productUpdate = await GiftBox.findByIdAndUpdate(id, req.body, {
+    const updates = { ...req.body };
+
+    if (!updates.slug || updates.slug.trim() === "") {
+      updates.slug = (updates.name || box.name)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    }
+
+    const productUpdate = await GiftBox.findByIdAndUpdate(id, updates, {
       returnDocument: "after",
       runValidators: true,
     });

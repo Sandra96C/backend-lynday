@@ -51,7 +51,16 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const productUpdate = await Product.findByIdAndUpdate(id, req.body, {
+    const updates = { ...req.body };
+
+    if (!updates.slug || updates.slug.trim() === "") {
+      updates.slug = (updates.name || product.name)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    }
+
+    const productUpdate = await Product.findByIdAndUpdate(id, updates, {
       returnDocument: "after",
       runValidators: true,
     });
