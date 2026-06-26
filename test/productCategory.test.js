@@ -96,6 +96,7 @@ describe("Products Category ", function () {
     it("Crea una nueva categoria de producto", async () => {
       const newCategory = {
         name: "Categoria de prueba",
+        slug: "categoria-de-prueba",
       };
       const res = await request(app)
         .post(`/product-category/new`)
@@ -109,6 +110,7 @@ describe("Products Category ", function () {
     it("No crea una nueva categoria de producto que ya existe", async () => {
       const newCategory = {
         name: "alimentacion",
+        slug: "alimentacion",
       };
       const res = await request(app)
         .post(`/product-category/new`)
@@ -121,6 +123,7 @@ describe("Products Category ", function () {
     it("No crea una nueva categoria de producto sin token", async () => {
       const newCategory = {
         name: "decoracion",
+        slug: "decoracion",
       };
       const res = await request(app)
         .post(`/product-category/new`)

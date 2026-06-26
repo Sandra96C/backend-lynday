@@ -7,10 +7,10 @@ const createAdminUser = async () => {
   try {
     const existingAdmin = await User.findOne({ role: "admin" });
     if (!existingAdmin) {
-      const hash = await bcrypt.hash("admin123", 10);
+      const hash = await bcrypt.hash(process.env.ADMIN_USER_PASSWORD, 10);
       const adminUser = new User({
         name: "admin",
-        email: "admin@test.com",
+        email: process.env.ADMIN_USER_EMAIL,
         password: hash,
         role: "admin",
       });
@@ -27,4 +27,3 @@ const createAdminUser = async () => {
 };
 
 createAdminUser();
-// $2b$10$ufVNF.oCsfgt5OtpyFJqhet3nJNsJEYu2ZQno89E1jNAJftTs6Zlm

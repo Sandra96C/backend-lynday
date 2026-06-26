@@ -83,7 +83,7 @@ export const deleteProductCategory = async (req, res) => {
 
 export const createProductCategory = async (req, res) => {
   try {
-    const { name, description, image, sort } = req.body;
+    const { name, description, image, sort, slug } = req.body;
 
     if (!name) {
       return res.status(400).json({
@@ -101,11 +101,25 @@ export const createProductCategory = async (req, res) => {
       });
     }
 
+    const finalSlug =
+      slug || `${name.trim().toLowerCase().replaceAll(" ", "-")}`;
+
+    const existProductCateogry = await ProductCategory.findOne({
+      slug: finalSlug,
+    });
+
+    if (existProductCateogry) {
+      return res.status(409).json({
+        error: "ProductCategory already exist",
+      });
+    }
+
     const productCategory = await ProductCategory.create({
       name: name.trim().toLowerCase(),
       description,
       image,
       sort,
+      slug: finalSlug,
     });
 
     res.status(201).json(productCategory);
