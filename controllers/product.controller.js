@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Product from "../models/Product.js";
 
 export const getProducts = async (req, res) => {
@@ -13,17 +14,23 @@ export const getProducts = async (req, res) => {
   }
 };
 
-export const getProductById = async (req, res) => {
+export const getProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const product = await Product.findById(id);
+    let product;
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      product = await Product.findById(id);
+    } else {
+      product = await Product.findOne({ slug: id });
+    }
 
     if (!product) {
       return res.status(404).json({ error: "product not found" });
     }
 
-    res.status(200).json(product);
+    res.json(product);
   } catch (error) {
     console.error("Error:", error);
     if (error.name == "CastError") {
@@ -44,7 +51,16 @@ export const updateProduct = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const productUpdate = await Product.findByIdAndUpdate(id, req.body, {
+    const updates = { ...req.body };
+
+    if (!updates.slug || updates.slug.trim() === "") {
+      updates.slug = (updates.name || product.name)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    }
+
+    const productUpdate = await Product.findByIdAndUpdate(id, updates, {
       returnDocument: "after",
       runValidators: true,
     });

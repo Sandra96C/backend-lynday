@@ -41,7 +41,16 @@ export const updateCategory = async (req, res) => {
       return res.status(404).json({ error: "Category not found" });
     }
 
-    const categoryUpdate = await Category.findByIdAndUpdate(id, req.body, {
+    const updates = { ...req.body };
+
+    if (!updates.slug || updates.slug.trim() === "") {
+      updates.slug = (updates.name || category.name)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    }
+
+    const categoryUpdate = await Category.findByIdAndUpdate(id, updates, {
       returnDocument: "after",
     });
 

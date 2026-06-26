@@ -10,6 +10,13 @@ const productCategorySchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 50,
     },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     description: {
       type: String,
       trim: true,

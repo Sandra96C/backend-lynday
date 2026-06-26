@@ -11,19 +11,19 @@ import Counter from "../../models/Counter.js";
 
 export const createTestUsers = async () => {
   await User.deleteMany({});
-  const hash = await bcrypt.hash("123456", 10);
+  const hash = await bcrypt.hash(process.env.TEST_PASSWORD, 10);
 
   // Usuario normal para login tests
   await User.create({
     name: "test",
-    email: "test@test.com",
+    email: process.env.USER_EMAIL,
     password: hash,
   });
 
   // Usuario normal desactivado para login tests
   await User.create({
     name: "test",
-    email: "test2@test.com",
+    email: process.env.USER_EMAIL2,
     password: hash,
     active: false,
   });
@@ -31,7 +31,7 @@ export const createTestUsers = async () => {
   // Admin para register tests
   await User.create({
     name: "admin",
-    email: "admin@test.com",
+    email: process.env.ADMIN_USER_EMAIL,
     password: hash,
     role: "admin",
   });
@@ -88,12 +88,14 @@ export const createTestProductCategories = async () => {
 
   await ProductCategory.create({
     name: "alimentacion",
+    slug: "alimentacion",
     description: "Productos de degustación y alimentación artesanal",
     sort: 1,
   });
 
   await ProductCategory.create({
     name: "decoracion",
+    slug: "decoracion",
     description: "Productos decorativos para el hogar",
     sort: 2,
   });

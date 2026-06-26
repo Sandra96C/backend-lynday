@@ -3,7 +3,7 @@ import { authMiddleware, isAdmin } from "../middlewares/auth.middleware.js";
 import {
   createProduct,
   deleteProduct,
-  getProductById,
+  getProduct,
   getProducts,
   updateProduct,
 } from "../controllers/product.controller.js";
@@ -11,7 +11,7 @@ import {
 const router = Router();
 
 router.get("/", getProducts);
-router.get("/:id", getProductById);
+router.get("/:id", getProduct);
 router.post("/new", authMiddleware, createProduct);
 router.put("/:id", authMiddleware, updateProduct);
 router.delete("/:id", authMiddleware, isAdmin, deleteProduct);

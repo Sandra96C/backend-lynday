@@ -29,6 +29,15 @@ describe("Products ", function () {
       expect(res.status).to.equal(200);
       expect(res.body).to.have.property("name");
     });
+
+    it("Deberia retornar el producto con el slug", async function () {
+      const product = await Product.findOne();
+
+      const res = await request(app).get(`/product/${product.slug}`);
+
+      expect(res.status).to.equal(200);
+      expect(res.body).to.have.property("name");
+    });
   });
 
   describe("Put Product", function () {
