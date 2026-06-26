@@ -41,9 +41,18 @@ export const updateProductCategory = async (req, res) => {
       return res.status(404).json({ error: "Product category not found" });
     }
 
+    const updates = { ...req.body };
+
+    if (!updates.slug || updates.slug.trim() === "") {
+      updates.slug = (updates.name || productCategory.name)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    }
+
     const productCategoryUpdate = await ProductCategory.findByIdAndUpdate(
       id,
-      req.body,
+      updates,
       {
         returnDocument: "after",
       },
