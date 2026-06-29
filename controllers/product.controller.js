@@ -21,9 +21,9 @@ export const getProduct = async (req, res) => {
     let product;
 
     if (mongoose.Types.ObjectId.isValid(id)) {
-      product = await Product.findById(id);
+      product = await Product.findById(id).populate("categories");
     } else {
-      product = await Product.findOne({ slug: id });
+      product = await Product.findOne({ slug: id }).populate("categories");
     }
 
     if (!product) {
